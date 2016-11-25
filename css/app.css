@@ -57,6 +57,10 @@ p {
   background: #007DDC;
 }
 .add_btn:disabled {
-  background: #CCC;
-  color:  #999;
+  /*background: #CCC;
+  color:  #999;*/
+  visibility: hidden;
+}
+.clock:disabled {
+  visibility: hidden;
 }

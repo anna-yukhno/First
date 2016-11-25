@@ -14,6 +14,9 @@ var my_news = [
         author: 'Shepperd',
         text: 'High priority',
         bigText: 'Task description'
+        // timeIn: 
+        // timeOut:
+        // total:
     },
     {
         author: 'Rami',
@@ -24,6 +27,7 @@ var my_news = [
 
 window.ee = new EventEmitter();
 
+//--------------------------------------------------------------------------------------------------------------------------------------------------
 var Article = React.createClass({
     propTypes: {
         data: React.PropTypes.shape ({
@@ -36,11 +40,41 @@ var Article = React.createClass({
     getInitialState: function() {
         return {
             visible: false
+           
+            // clockInHide: false,
+            // clockOutHide: true,
+            // finishIsHide: true
         }
     },
     readmoreClick: function (e){
         e.preventDefault();
         this.setState({visible: true});
+    },
+    onClockClick: function (){
+        var time = new Date;
+        this.props.data.timeIn = time.getTime();
+        console.log( this.props.data.author + ' : ' + this.props.data.timeIn); //начало отсчета
+    },
+    onClockOutClick: function(){
+        var time = new Date;
+        this.props.data.timeOut = time.getTime();
+
+        if (! this.props.data.timeIn) {
+            alert('Task is not started');
+        } else {
+            if(! this.props.data.totalTime) {
+                 this.props.data.totalTime = 0;
+            }
+                var interval = ( this.props.data.timeOut -  this.props.data.timeIn) / 60000;
+                this.props.data.totalTime += interval;
+        }
+            console.log(this.props.data.author + ' : ' + this.props.data.totalTime.toFixed(0));
+            this.props.data.timeIn = ''; //обнулила начало отсчета
+    },
+    onFinishClick: function(){
+        this.props.data.timeIn = '';
+        this.props.data.timeOut = '';
+        //обнулила счетчики
     },
 
     render: function () {
@@ -48,6 +82,10 @@ var Article = React.createClass({
             text = this.props.data.text,
             bigText = this.props.data.bigText,
             visible = this.state.visible;
+
+            // var clockInHide = this.state.clockInHide,
+            //     clockOutHide = this.state.clockOutHide,
+            //     finishIsHide = this.state.finishIsHide;
 
         return (
             <div className= "article">
@@ -62,11 +100,33 @@ var Article = React.createClass({
 
                 {/* для большо текста: не показывай текст, если visible === false */}
                 <p className= {"news_bigText" + (visible ? '': 'none')}>{bigText}</p>
+                <button
+                    className= 'clock'
+                    onClick = {this.onClockClick}
+                    //disabled= {clockInHide}
+                     >
+                    Clock In
+                </button>
+                <button
+                    className= 'clock'
+                    onClick = {this.onClockOutClick}
+                    //disabled= {clockOutHide}
+                     >
+                    Clock Out
+                </button>
+                <button
+                    className= 'clock'
+                    onClick = {this.onFinishClick}
+                    //disabled= {finishIsHide}
+                     >
+                    Finished
+                </button>
             </div>
         )
     }
 })
 
+//-----------------------------------------------------------------------------------------------------------------------------------
 var News = React.createClass({
     propTypes: {
         data: React.PropTypes.array.isRequired
@@ -103,6 +163,8 @@ var News = React.createClass({
         );
     }
 });
+
+//----------------------------------------------------------------------------------------------------------------------------------------
 var Add = React.createClass({
     getInitialState: function() {
         return {
@@ -125,10 +187,11 @@ var Add = React.createClass({
        var text = priority.value;
        
        var item = [{
-        author: author,
-        text: text,
-        bigText: bigText
-       }];
+            author: author,
+            text: text,
+            bigText: bigText,
+            totalTime: ''
+        }];
        window.ee.emit('News.add', item);
        textEl.value = '';
        priority.value = '';
@@ -152,7 +215,7 @@ var Add = React.createClass({
             textIsEmpty = this.state.textIsEmpty,
             bigTextIsEmpty = this.state.bigTextIsEmpty;
         return (
-        <form className = 'add cf'>
+        <form className = 'addForm'>
            <input
                 type= 'text'
                 className= 'add_author'
@@ -191,6 +254,7 @@ var Add = React.createClass({
     }
 });
 
+//-----------------------------------------------------------------------------------------------------------------------------------------------
 var App = React.createClass({
 
     getInitialState: function() {
