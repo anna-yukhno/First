@@ -1,0 +1,23 @@
+{
+  "name": "anna_kovalenko",
+  "version": "1.0.0",
+  "description": "start react learning",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "origin master"
+  },
+  "keywords": [
+    "react",
+    "node",
+    "js"
+  ],
+  "author": "Anna Kovalenko",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.14.0"
+  }
+}
